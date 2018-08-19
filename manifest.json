@@ -1,0 +1,33 @@
+{
+    "name": "DAIICT Webmail",
+    "version": "1.0",
+    "description": "Push notifications for new emails and more ...",
+    "manifest_version": 2,
+    "permissions": [
+        "storage",
+        "https://webmail.daiict.ac.in/",
+        "notifications",
+        "tabs"
+    ],
+    "background": {
+        "scripts": [
+            "lib/jquery-3.3.1.min.js",
+            "lib/xml2json.js",
+            "lib/jquery.soap.js",
+            "lib/bootstrap.bundle.min.js",
+            "api-calls.js",
+            "common.js",
+            "background.js"
+        ],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "images/da-logo-16.png",
+            "32": "images/da-logo-32.png",
+            "48": "images/da-logo-48.png",
+            "128": "images/da-logo-128.png"
+        }
+    }
+}

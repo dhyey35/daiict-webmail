@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="lib/bootstrap.min.css">
+    <link rel="stylesheet" href="popup.css">
+    <script src="popup.js"></script>
+</head>
+
+<body class="popup-container">
+    <div id="login-page" class="container hidden">
+        <h5 class="text-center login-title">
+            Login
+        </h5>
+        <form id="login-form">
+            <div class="form-group">
+                <input type="text" id="student-id" class="form-control" placeholder="Student ID" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" class="form-control" placeholder="Password" required>
+            </div>
+            <div class="text-center">
+                <button id="login-submit-btn" type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            <div id="login-error" class="text-center hidden">
+                <p>Please try again !!</p>
+            </div>
+        </form>
+    </div>
+    <div id="email-page" class="hidden">
+        <div class="email-list-title">
+            Unread Emails
+            <a class="webmail-link float-right cursor-pointer" href="#">Open Webmail</a>
+        </div>
+        <div id="email-list"></div>
+        <div id="email-list-empty" class="hidden">
+            No unread emails
+        </div>
+        <div id="email-list-error" class="hidden">
+            Error in retriving emails. Please try again later !!
+        </div>
+    </div>
+</body>
+
+</html>
