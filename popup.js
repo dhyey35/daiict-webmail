@@ -18,6 +18,8 @@ $(document).ready(function () {
     var emailListEmpty = $(document).find("#email-list-empty");
     var internetError = $(document).find("#internet-error");
     var loginInternetError = $(document).find("#login-internet-error");
+    var progressBar = $(document).find("#progress-bar");
+    var progressBarContainer = $(document).find("#progress-bar-container");
 
     console.log("isLoggedIn", COMMON.getState('isLoggedIn'));
     if (!COMMON.getState('isLoggedIn')) {
@@ -75,11 +77,11 @@ $(document).ready(function () {
                     }
                     return loginError.removeClass("hidden");
                 }
+                showEmailList();
                 loginPage.addClass("hidden");
                 emailPage.removeClass("hidden");
             })
         });
-        showEmailList();
     });
 
     function showEmailList() {
@@ -123,6 +125,16 @@ $(document).ready(function () {
             } else {
                 emailListEmpty.removeClass("hidden");
             }
+            COMMON.getStorageInfo(function(err, storageInfo) {
+                if(err) return;
+                // Convert bytes to megabytes
+                var usedMb = parseInt(storageInfo.used) / ( 1024 * 1024 );
+                var totalMb = parseInt(storageInfo.total) / ( 1024 * 1024 );
+                var percentUsed = usedMb * 100 / totalMb;
+                progressBar.css("width", parseInt(percentUsed) + "%");
+                progressBarContainer.attr("title", "Used " + percentUsed.toFixed(1) + "% (" + usedMb.toFixed(1) + " MB of " + totalMb.toFixed(1) + " MB )");
+                console.log("MBS", usedMb, totalMb);
+            })
         })
     }
 })

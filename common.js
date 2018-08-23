@@ -22,7 +22,6 @@ var COMMON = (function () {
                     chrome.storage.sync.set({ 'token': STATE.token }, function () {
                         callback(null, STATE.token);
                     });
-                    // get unread emails and storage status
                 })
             } else {
                 return callback(true, {
@@ -75,6 +74,27 @@ var COMMON = (function () {
         })
     }
 
+    var getStorageInfo = function(callback) {
+        if(!isOnLine()) return callback(true, {
+            code: 99 // code 99 is for no internet
+        })
+        getToken(function(err, token) {
+            if(err) {
+                return callback(err);
+            }
+            chrome.storage.sync.get(['studentId'], function(data) {
+                if(!data.studentId) return callback(true, null);
+                APICALLS.accountInfo({
+                    token: token,
+                    userid: data.studentId,
+                }, function(err, done) {
+                    if(err) return callback(err, null);
+                    return callback(null, done);
+                })
+            });
+        })
+    }
+
     var getToken = function(callback) {
         if(STATE.token) return callback(null, STATE.token);
         chrome.storage.sync.get(['token'], function(data) {
@@ -103,5 +123,6 @@ var COMMON = (function () {
         getState: getState,
         getUnreadEmails: getUnreadEmails,
         deleteEmail: deleteEmail,
+        getStorageInfo: getStorageInfo,
     }
 })();

@@ -131,10 +131,52 @@ var APICALLS = (function () {
         })
     }
 
+    var accountInfo = function (data, callback) {
+        /* 
+            data: {
+                token: string,
+                userid: string,
+            }
+        */
+        var xml = [
+            '<?xml version="1.0" ?>',
+            '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">',
+            '<soap:Header>',
+            '<context xmlns="urn:zimbra">',
+            '<format type="xml"/>',
+            '<authToken>' + data.token + '</authToken>',
+            '</context>',
+            '</soap:Header>',
+            '<soap:Body>',
+            '<GetInfoRequest xmlns="urn:zimbraAccount">',
+            '<account by="name">' + data.userid + '</account>',
+            '</GetInfoRequest>',
+            '</soap:Body>',
+            '</soap:Envelope>',
+        ];
+        $.soap({
+            data: xml.join(''),
+            success: function (soapResponse) {
+                var res = soapResponse.toJSON();
+                var data = {
+                    used: getSoapBody(res)["GetInfoResponse"]["used"],
+                    total: getSoapBody(res)["GetInfoResponse"]["attrs"]["attr"][14]["_"],
+                }
+                console.log("accountInfo data", data);
+                callback(null, data);
+            },
+            error: function (errorResponse) {
+                console.log("accountInfo Err", errorResponse.toJSON());
+                callback(true, errorResponse.toJSON());
+            }
+        })
+    }
+
     /* All the variables returned will be accessible by other scripts */
     return {
         getAuthToken: getAuthToken,
         searchRequest: searchRequest,
         itemAction: itemAction,
+        accountInfo: accountInfo,
     }
 })()

@@ -19,10 +19,32 @@ COMMON.loginUser(function(err, data) {
 
 function setUnreadInBadge() {
     COMMON.getUnreadEmails(function(err, data) {
-        console.log("Unread emails", data);
+        console.log("Unread emails", err, data);
+        if(data && data.length) {
+            var newEmails = data.length;
+            chrome.storage.sync.get('lastNotification', function(storageData) {
+                if(storageData.lastNotification) {
+                    newEmails = 0;
+                    data.map(function(msg) {
+                        if(parseInt(msg.$.d) > storageData.lastNotification) {
+                            newEmails++;
+                        }
+                    })
+                }
+                if(newEmails) {
+                    chrome.notifications.create(null, {
+                        type: 'basic',
+                        title: 'DAIICT Webmail',
+                        message: 'You have ' + newEmails + ' new ' + (newEmails > 1 ?'emails' : 'email'),
+                        iconUrl: 'images/da-logo-128.png'
+                    });
+                }
+                chrome.storage.sync.set({ lastNotification: Date.now() });
+            });
+        }
+        // TODO: emit event so popup can show latest emails
+        setTimeout(function() {
+            setUnreadInBadge();
+        }, 30000)
     });
-    // TODO: emit event so popup can show latest emails
-    setTimeout(function() {
-        setUnreadInBadge();
-    }, 30000)
 }
