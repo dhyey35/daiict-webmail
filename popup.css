@@ -51,4 +51,9 @@ span.mail-delete {
     left: 0;
     right: 0;
     padding: 10px 15px;
+    background: white;
+}
+
+div#email-list {
+    padding-bottom: 20px;
 }

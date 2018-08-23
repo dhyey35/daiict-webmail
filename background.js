@@ -1,8 +1,8 @@
-COMMON.loginUser(function(err, data) {
-    if(err) {
+COMMON.loginUser(function (err, data) {
+    if (err) {
         var message = "Seems like webmail is down. Please try again later !!";
-        if(data) {
-            if(data.code === 1 || data.code === 99) return; // student ID or password weren't there, or no internet
+        if (data) {
+            if (data.code === 1 || data.code === 99) return; // student ID or password weren't there, or no internet
             message = "Login Failed. Please check ID and password and try logging in again !!";
         }
         // post message to popup to show error
@@ -18,32 +18,34 @@ COMMON.loginUser(function(err, data) {
 });
 
 function setUnreadInBadge() {
-    COMMON.getUnreadEmails(function(err, data) {
+    COMMON.getUnreadEmails(function (err, data) {
         console.log("Unread emails", err, data);
-        if(data && data.length) {
+        if (data && data.length) {
             var newEmails = data.length;
-            chrome.storage.sync.get('lastNotification', function(storageData) {
-                if(storageData.lastNotification) {
+            chrome.storage.sync.get('lastNotification', function (storageData) {
+                if (storageData.lastNotification) {
                     newEmails = 0;
-                    data.map(function(msg) {
-                        if(parseInt(msg.$.d) > storageData.lastNotification) {
+                    data.map(function (msg) {
+                        if (parseInt(msg.$.d) > storageData.lastNotification) {
                             newEmails++;
                         }
                     })
                 }
-                if(newEmails) {
+                if (newEmails) {
                     chrome.notifications.create(null, {
                         type: 'basic',
                         title: 'DAIICT Webmail',
-                        message: 'You have ' + newEmails + ' new ' + (newEmails > 1 ?'emails' : 'email'),
+                        message: 'You have ' + newEmails + ' new ' + (newEmails > 1 ? 'emails' : 'email'),
                         iconUrl: 'images/da-logo-128.png'
                     });
+                    var notificationSound = new Audio('./audio/notification.ogg');
+                    notificationSound.play();
+                    chrome.storage.sync.set({ lastNotification: Date.now() });
                 }
-                chrome.storage.sync.set({ lastNotification: Date.now() });
             });
         }
         // TODO: emit event so popup can show latest emails
-        setTimeout(function() {
+        setTimeout(function () {
             setUnreadInBadge();
         }, 30000)
     });

@@ -109,8 +109,8 @@ $(document).ready(function () {
                         '<div class="single-mail">' +
                         '<span data-mail-id="' + element.$.id + '" class="mail-delete cursor-pointer"> Delete </span>' +
                         '<div class="mail-from" data-toggle="tooltip" data-placement="right" title="' + element.e.$.a + '">' + emailFrom + '</div>' +
-                        '<div class="mail-subject">' + element.su + '</div>' +
-                        '<div class="mail-data">' + element.fr + '</div>' +
+                        '<div class="mail-subject">' + (element.su ? element.su : '') + '</div>' +
+                        '<div class="mail-data">' + (element.fr ? element.fr : '') + '</div>' +
                         '</div>';
                     emailListContainer.append(singleMail);
                 });
