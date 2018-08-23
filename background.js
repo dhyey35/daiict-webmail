@@ -2,7 +2,7 @@ COMMON.loginUser(function(err, data) {
     if(err) {
         var message = "Seems like webmail is down. Please try again later !!";
         if(data) {
-            if(data.code === 1) return; // student ID or password weren't there
+            if(data.code === 1 || data.code === 99) return; // student ID or password weren't there, or no internet
             message = "Login Failed. Please check ID and password and try logging in again !!";
         }
         // post message to popup to show error

@@ -16,6 +16,8 @@ $(document).ready(function () {
     var emailListContainer = $(document).find("#email-list");
     var emailListError = $(document).find("#email-list-error");
     var emailListEmpty = $(document).find("#email-list-empty");
+    var internetError = $(document).find("#internet-error");
+    var loginInternetError = $(document).find("#login-internet-error");
 
     console.log("isLoggedIn", COMMON.getState('isLoggedIn'));
     if (!COMMON.getState('isLoggedIn')) {
@@ -31,13 +33,13 @@ $(document).ready(function () {
     }
 
 
-    openWebmailLink.on('click', function() {
+    openWebmailLink.on('click', function () {
         /* Make webmail tab active if it is open, else open a new tab for webmail */
         chrome.tabs.query({
             url: 'https://webmail.daiict.ac.in/*'
-        }, function(tabArr) {
+        }, function (tabArr) {
             console.log("tabArr", tabArr);
-            if(tabArr && tabArr[0]) {
+            if (tabArr && tabArr[0]) {
                 chrome.tabs.highlight({
                     windowId: tabArr[0].windowId,
                     tabs: tabArr[0].index
@@ -52,6 +54,10 @@ $(document).ready(function () {
 
     loginForm.on('submit', function (event) {
         event.preventDefault();
+
+        loginInternetError.addClass("hidden");
+        loginError.addClass("hidden");
+
         var studentId = studentIdField.val();
         var password = passwordField.val();
         loginSubmitBtn.attr("disabled", "disabled");
@@ -64,7 +70,10 @@ $(document).ready(function () {
             COMMON.loginUser(function (err, data) {
                 loginSubmitBtn.removeAttr("disabled");
                 if (err) {
-                    return loginError.show();
+                    if (data && data.code === 99) {
+                        return loginInternetError.removeClass("hidden");
+                    }
+                    return loginError.removeClass("hidden");
                 }
                 loginPage.addClass("hidden");
                 emailPage.removeClass("hidden");
@@ -77,11 +86,15 @@ $(document).ready(function () {
         console.log("in showEmailList")
         emailListEmpty.addClass("hidden");
         emailListError.addClass("hidden");
+        internetError.addClass("hidden");
         // TODO: show loading icon
         // TODO: do not call api every time, use data in storage
         // TODO: listen to event from background page
         COMMON.getUnreadEmails(function (err, data) {
             if (err) {
+                if (data && data.code === 99) {
+                    return internetError.removeClass("hidden");
+                }
                 return emailListError.removeClass("hidden");
             }
             emailListError.addClass("hidden");

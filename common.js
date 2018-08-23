@@ -5,6 +5,9 @@ var COMMON = (function () {
     }
 
     var loginUser = function (callback) {
+        if(!isOnLine()) return callback(true, {
+            code: 99 // code 99 is for no internet
+        })
         chrome.storage.sync.get(['studentId', 'password'], function (data) {
             console.log("data", data);
             if (data.studentId && data.password) {
@@ -30,6 +33,9 @@ var COMMON = (function () {
     }
 
     var getUnreadEmails = function(callback) {
+        if(!isOnLine()) return callback(true, {
+            code: 99 // code 99 is for no internet
+        })
         getToken(function(err, token) {
             if(err) {
                 return callback(err); // show user login page
@@ -51,6 +57,9 @@ var COMMON = (function () {
     }
 
     var deleteEmail = function(ids, callback) {
+        if(!isOnLine()) return callback(true, {
+            code: 99 // code 99 is for no internet
+        })
         getToken(function(err, token) {
             if(err) {
                 return callback(err);
@@ -83,6 +92,10 @@ var COMMON = (function () {
 
     var getState = function (key) {
         return STATE[key];
+    }
+
+    var isOnLine = function() {
+        return window.navigator.onLine;
     }
 
     return {
