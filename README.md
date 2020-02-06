@@ -1,6 +1,7 @@
 # daiict-webmail
 A chrome extension to notify users about new emails in their webmail
 
+
 The main features of this extension are:
 
 * List of unread emails ( upto 10 lastest )
